@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot de Tienda de Ropa</title>
+    <style>
+        /* Fondo relacionado con la venta de ropa */
+        body {
+            background-image: url('https://www.esdesignbarcelona.com/sites/default/files/imagenes/haz-crecer-tu-marca-de-ropa-frente-la-competencia_1.jpg'); /* Inserta aquí la URL de una imagen de fondo de ropa */
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Estilos para el contenedor del chatbot */
+        #chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            max-height: 400px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+        #chat-log {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        #chat-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #f2f2f2;
+            text-align: right;
+        }
+        .bot-message {
+            background-color: #e0f7fa;
+        }
+        /* Imagen de la prenda */
+        #product-image {
+            max-width: 100%;
+            max-height: 120px;
+            display: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <input type="text" id="chat-input" placeholder="Escribe un mensaje..." />
+        <img id="product-image" src="" alt="Imagen de producto">
+    </div>
+
+    <script>
+        const chatLog = document.getElementById("chat-log");
+        const chatInput = document.getElementById("chat-input");
+        const productImage = document.getElementById("product-image");
+
+        // Escucha el evento de tecla Enter para enviar el mensaje
+        chatInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                const userMessage = chatInput.value;
+                if (userMessage.trim() !== "") {
+                    displayMessage("Tú", userMessage, "user-message");
+                    getBotResponse(userMessage);
+                    chatInput.value = "";
+                }
+            }
+        });
+
+        // Muestra mensajes en el chat
+        function displayMessage(sender, message, className) {
+            const messageElement = document.createElement("div");
+            messageElement.textContent = `${sender}: ${message}`;
+            messageElement.classList.add("message", className);
+            chatLog.appendChild(messageElement);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        // Respuestas del bot para ayudar con compras de ropa y mostrar imágenes
+        function getBotResponse(message) {
+            let botMessage = "No entendí tu mensaje, ¿podrías ser más específico?";
+            productImage.style.display = "none"; // Ocultar la imagen por defecto
+            
+            if (message.toLowerCase().includes("hola")) {
+                botMessage = "¡Hola! Bienvenida a nuestra tienda de ropa. ¿Quieres ver el menú?";
+            } else if (message.toLowerCase().includes("menú") || message.toLowerCase().includes("disponible") || message.toLowerCase().includes("qué venden")) {
+                botMessage = "Claro, en nuestro menú tenemos blusas, vestidos, pantalones, faldas y accesorios. ¿Te gustaría ver una prenda en particular?";
+            } else if (message.toLowerCase().includes("blusa")) {
+                botMessage = "Tenemos una variedad de blusas en diferentes colores y estilos. Aquí tienes un ejemplo:";
+                productImage.src = "https://i.ebayimg.com/thumbs/images/g/1-cAAOSwLRhmdSnF/s-l1200.jpg"; // URL de la imagen de la blusa
+                productImage.style.display = "block";
+            } else if (message.toLowerCase().includes("vestido")) {
+                botMessage = "Nuestros vestidos están disponibles en varias tallas y estilos. Aquí tienes un ejemplo:";
+                productImage.src = "https://ae01.alicdn.com/kf/Sb8a209140b414f7ba4ea136337c68303t.jpg_960x960.jpg"; // URL de la imagen del vestido
+                productImage.style.display = "block";
+            } else if (message.toLowerCase().includes("pantalón")) {
+                botMessage = "¡Tenemos pantalones en muchos colores y estilos! Aquí tienes un ejemplo:";
+                productImage.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKBqc8c75VxaaERC6-FSf-dGB26uU7ebXiAA&s"; // URL de la imagen del pantalón
+                productImage.style.display = "block";
+            } else if (message.toLowerCase().includes("falda")) {
+                botMessage = "Contamos con faldas elegantes y casuales. Aquí tienes un ejemplo:";
+                productImage.src = "https://images.squarespace-cdn.com/content/v1/579202971b631b5dbc741986/1510407985576-UOR8BPSU9ZWCB535CTDU/Diccionario+Glam-+faldas.png"; // URL de la imagen de la falda
+                productImage.style.display = "block";
+            } else if (message.toLowerCase().includes("tallas")) {
+                botMessage = "Tenemos las siguientes tallas disponibles: XS, S, M, L, XL, XXL, 3XL.";
+            } else if (message.toLowerCase().includes("colores")) {
+                botMessage = "Nuestros colores disponibles son: negro, blanco, gris, rojo, azul, verde, amarillo, rosa, morado, marrón, beige, naranja, coral, turquesa, lila, mostaza, vino, marino, oliva, y lavanda.";
+            } else if (message.toLowerCase().includes("comprar") || message.toLowerCase().includes("precio")) {
+                botMessage = "Puedes comprar directamente en nuestra tienda en línea o te puedo dar detalles sobre precios y opciones disponibles.";
+            } else if (message.toLowerCase().includes("ayuda")) {
+                botMessage = "Claro, estoy aquí para ayudarte con lo que necesites sobre nuestra colección de ropa.";
+            }
+
+            displayMessage("Bot", botMessage, "bot-message");
+        }
+    </script>
+</body>
+</html>
